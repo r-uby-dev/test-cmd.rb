@@ -38,6 +38,41 @@ class Test::Command
                      .env("FOO" => "42")
                      .stdout
     end
+
+    def test_ruby_env_only_given_keys
+      assert_equal "BAR\nFOO\nPATH\n",
+                  ::Test::Command.new("ruby", "-e", "puts ENV.keys.sort")
+                  .env("FOO" => "42", "BAR" => "7")
+                  .stdout
+    end
+
+    def test_ruby_env_empty_is_empty_env
+      assert_equal "PATH",
+                  ::Test::Command.new("ruby", "-e", "print ENV.keys.sort.join(\",\")")
+                  .env({})
+                  .stdout
+    end
+
+    def test_ruby_env_does_not_leak_inherited
+      assert_equal "true",
+                    ::Test::Command.new("ruby", "-e", "print ENV.key?('PATH')")
+                    .stdout
+    end
+
+    def test_ruby_env_path_carries_over_inherited
+      parent_path = ENV["PATH"]
+      assert_equal parent_path,
+                   ::Test::Command.new("ruby", "-e", "print ENV['PATH']")
+                     .stdout
+    end
+
+    def test_ruby_env_path_carries_over_empty
+      parent_path = ENV["PATH"]
+      assert_equal parent_path,
+                   ::Test::Command.new("ruby", "-e", "print ENV['PATH']")
+                     .env({})
+                     .stdout
+    end
   end
 
   ##

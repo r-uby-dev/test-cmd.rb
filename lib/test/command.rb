@@ -28,7 +28,7 @@ class Test::Command
   def initialize(cmd, *argv)
     @cmd = cmd
     @argv = argv.dup
-    @env = {}
+    @env = nil
     @status = nil
     @spawned = false
     @stdout = ""
@@ -50,7 +50,7 @@ class Test::Command
   #  Environment variables to set for the spawned command
   # @return [Test::Command]
   def env(env)
-    tap { @env.merge!(env) }
+    tap { (@env ||= {}).merge!(env) }
   end
 
   ##
@@ -91,7 +91,7 @@ class Test::Command
       @spawned = true
       @out, @err = Pipe.pair, Pipe.pair
       @pid = Process.spawn(
-        @env,
+        envp,
         @cmd, *@argv.map(&:to_s),
         {in: @in_r, out: @out.w, err: @err.w}
       )
@@ -245,6 +245,29 @@ class Test::Command
   # @endgroup
 
   private
+
+  ##
+  # Builds the environment passed to Process.spawn.
+  # The spawned process receives only the variables
+  # set with #env: every inherited variable is
+  # cleared, so an empty @env spawns with an empty
+  # environment.
+  # @return [Hash{String => String}]
+  def envp
+    if @env.nil?
+      ##
+      # Inherit the parent's environment
+      ENV.to_h
+    else
+      ##
+      # Clear all environment variables except those
+      # that are set by `@env`. Always inherit ${PATH}.
+      envp = ENV.except("PATH")
+                .each_key
+                .to_h { |key| [key, nil] }
+      envp.merge!(@env)
+    end
+  end
 
   ##
   # Reads up to +max+ bytes from a stream, then drains

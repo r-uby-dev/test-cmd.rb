@@ -34,7 +34,6 @@ test-cmd.rb can be installed via rubygems.org:
 
 ### Commands
 
-
 ```ruby
 require "test-cmd"
 
@@ -75,13 +74,35 @@ p Test::Command
 <summary>Environment</summary>
 <br>
 
-```ruby
-require "test-cmd"
+A command that is not given an environment inherits the parent's
+environment. When `env` is called, only the variables that are
+given to `env` are set on the spawned process, alongside `$PATH`
+which is always inherited. `$PATH` is inherited so that the
+command can still be found via path lookup.
 
+```ruby
+##
+# Inherit the parent's environment. All variables
+# from the parent process are available.
 p Test::Command
-  .new("ruby", "-e", "puts ENV['FOO']")
-  .env("FOO" => "42")
-  .stdout  # => "42\n"
+  .new("env")
+  .stdout
+
+##
+# Only $FOO and $BAR are set, plus the inherited
+# $PATH. Everything else is left behind.
+p Test::Command
+  .new("env")
+  .env("FOO" => "42", "BAR" => "7")
+  .stdout
+
+##
+# An empty hash yields only $PATH and the rest of
+# environment is left empty.
+p Test::Command
+    .new("env")
+    .env({})
+    .stdout
 ```
 </details>
 
