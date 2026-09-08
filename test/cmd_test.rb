@@ -64,8 +64,8 @@ class Test::Command
     end
 
     def test_ruby_env_empty_is_empty_env
-      assert_equal "PATH#{macos}",
-                  ::Test::Command.new("ruby", "-e", "print ENV.keys.sort.join(\",\")")
+      assert_equal "PATH\n#{macos}",
+                  ::Test::Command.new("ruby", "-e", "puts ENV.keys.sort")
                   .env({})
                   .stdout
     end
