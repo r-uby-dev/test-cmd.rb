@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.name = "test-cmd.rb"
   gem.authors = ["Robert Gleeson"]
   gem.email = ["robert@r.uby.dev"]
-  gem.homepage = "https://github.com/0x1eef/test-cmd.rb#readme"
+  gem.homepage = "https://github.com/r-uby-dev/test-cmd.rb#readme"
   gem.version = Test::Command::VERSION
   gem.required_ruby_version = ">= 3.0"
   gem.licenses = ["MIT"]
