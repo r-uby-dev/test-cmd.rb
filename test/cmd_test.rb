@@ -12,19 +12,25 @@ end
 
 class Test::Command
   ##
-  # Test::Command#argv
-  class ARGVTest < Test
-    def test_ruby_argv
+  # Test::Command#arguments
+  class ArgumentsTest < Test
+    def test_ruby_arguments
       assert_equal "42\n", ::Test::Command.new("ruby")
-                             .argv("-e", "warn 42")
+                             .arguments("-e", "warn 42")
                              .stderr
     end
 
-    def test_ruby_argv_to_s
+    def test_ruby_arguments_to_s
       arg = Object.new
       def arg.to_s = "-e"
       assert_equal "42\n", ::Test::Command.new("ruby")
-                             .argv(arg, "warn 42")
+                             .arguments(arg, "warn 42")
+                             .stderr
+    end
+
+    def test_ruby_arguments_argv_alias
+      assert_equal "42\n", ::Test::Command.new("ruby")
+                             .argv("-e", "warn 42")
                              .stderr
     end
   end

@@ -38,12 +38,13 @@ class Test::Command
   end
 
   ##
-  # @param [Array<String, #to_s>] argv
+  # @param [Array<String, #to_s>] arguments
   #  Command-line arguments
   # @return [Test::Command]
-  def argv(*argv)
-    tap { @argv.concat(argv) }
+  def arguments(*arguments)
+    tap { @argv.concat(arguments) }
   end
+  alias_method :argv, :arguments
 
   ##
   # @param [Hash{String => String}] env

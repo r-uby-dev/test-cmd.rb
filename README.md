@@ -41,7 +41,7 @@ require "test-cmd"
 # Call the 'ls' command
 p Test::Command
   .new("ls")
-  .argv("-l")
+  .arguments("-l")
   .stdout
 
 ##
@@ -65,8 +65,8 @@ p Test::Command
 # stderr. At most 20k bytes is read from both:
 p Test::Command
   .new("git")
+  .arguments("diff", "--cached")
   .limit(stdout: 20_000, stderr: 20_000)
-  .argv("diff", "--cached")
   .stdout
 ```
 
