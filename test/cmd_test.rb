@@ -7,6 +7,17 @@ class Test::Command
     def ruby(str)
       ::Test::Command.new "ruby", "-e", str
     end
+
+    ##
+    # macos-specific env vars that are always set
+    # @return [String]
+    def macos
+      if ENV["__CF_USER_TEXT_ENCODING"]
+        "__CF_USER_TEXT_ENCODING\n"
+      else
+        ""
+      end
+    end
   end
 end
 
@@ -46,7 +57,7 @@ class Test::Command
     end
 
     def test_ruby_env_only_given_keys
-      assert_equal "BAR\nFOO\nPATH\n",
+      assert_equal "BAR\nFOO\nPATH\n#{macos}",
                   ::Test::Command.new("ruby", "-e", "puts ENV.keys.sort")
                   .env("FOO" => "42", "BAR" => "7")
                   .stdout
